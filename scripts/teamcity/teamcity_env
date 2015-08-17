@@ -1,0 +1,2 @@
+export TEAMCITY_BIN_PATH=/usr/local/teamcity
+export TEAMCITY_AGENT_PATH=${TEAMCITY_BIN_PATH}/buildAgent
