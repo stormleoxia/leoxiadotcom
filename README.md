@@ -5,9 +5,21 @@
 	
 	- config/etc/apache2
 	Contains web server configuration files
+
+	- config/etc/init.d
+	Contains service definition
 	
 	- scripts
-	Hold scripts used during configuration
+	Contains scripts used during configuration
 	
-	
-	
+	- scripts/teamcity
+	Contains scripts related to teamcity server/agent installation
+
+	- scripts/security
+	Contains scripts related to security tweaking
+
+	- scripts/benchmark
+	Contains scripts related to performance measurement
+
+	- wordpress
+	Contains all files related to wordpress tweaking
