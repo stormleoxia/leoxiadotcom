@@ -1,0 +1,29 @@
+#!/bin/sh
+# /etc/init.d/teamcity -  startup script for teamcity
+
+#DEFINE EXPORTS
+
+case $1 in
+  start)
+    echo "TeamCity starts..."
+    start-stop-daemon --start  -c teamcity --exec ${TEAMCITY_AGENT_PATH}/bin/agent.sh start
+    echo "TeamCity started"
+    ;;
+  stop)
+    echo "TeamCity stops..."
+    start-stop-daemon --start -c teamcity  --exec ${TEAMCITY_AGENT_PATH}/bin/agent.sh stop
+    echo "TeamCity stopped"
+    ;;
+  restart)
+    echo "TeamCity restarts..."
+    start-stop-daemon --start  -c teamcity --exec ${TEAMCITY_AGENT_PATH}/bin/agent.sh stop
+    start-stop-daemon --start  -c teamcity --exec ${TEAMCITY_AGENT_PATH}/bin/agent.sh start
+    echo "TeamCity restarted"
+    ;;
+  *)
+    echo "Usage: /etc/init.d/teamcity {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
