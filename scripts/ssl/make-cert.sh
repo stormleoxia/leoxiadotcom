@@ -3,10 +3,10 @@
 dir=/etc/ssl
 
 
-dir=/etc/ssl              # Where everything is kept
+dir=/etc/ssl              	# Where everything is kept
 certs=$dir/certs            # Where the issued certs are kept
-crl_dir=$dir/crl              # Where the issued crl are kept
-database=$dir/index.txt        # database index file.
+crl_dir=$dir/crl            # Where the issued crl are kept
+database=$dir/index.txt      # database index file.
 #unique_subject = no                    # Set to 'no' to allow creation of
                                         # several ctificates with same subject.
 new_certs_dir=$dir/newcerts         # default place for new certs.
@@ -26,7 +26,8 @@ default_keyfile=$private_dir/leoxia.key
 
 new_certs_dir=$dir/newcerts
 
-conffile=$confdir/openssl.cnf
+conf_file=$confdir/openssl.cnf
+key_file=$private_dir/leoxia.key
 pem_file=$pubdir/leoxia.pem
 der_file=$pubdir/leoxia.der
 csr_file=$pubdir/leoxia.csr
@@ -57,14 +58,23 @@ cert_file=$pubdir/leoxia.crt
 echo "01" > $dir/serial
 touch $dir/index.txt
 
-openssl genrsa 4096 -sha512 -x509 -days 3650 -rand /etc/hosts -out $private_key
+# generate .key file
+openssl genrsa 4096 -sha512 -x509 -days 3650 -rand /etc/hosts -out $key_file
+chmod 600 $key_file
 
-openssl req -new -key $private_key -out $csr_file
+# generate .csr file
+openssl req -new -key $key_file -out $csr_file
 
-openssl x509 -req -days 3650 -in $csr_file -signkey $private_key -out $cert_file
+# generate .crt
+openssl x509 -req -days 3650 -in $csr_file -signkey $key_file -out $cert_file
+
+# unencrypt key
+openssl rsa -in $key_file -out $key_file.unencrypted
+mv -f $key_file.unencrypted $key_file
+
+openssl req -new -x509 -extensions v3_ca -keyout cakey.pem -out cacert.pem -days 3650
 
 openssl x509 -in $certificate -outform DER -out $derfile
-
 cp $certificate $pubdir/$(openssl x509 -noout -hash -in $certificate).0
 
 cp $pubdir/leoxia.crt /var/www/leoxia.crt
